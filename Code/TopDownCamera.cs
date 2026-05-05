@@ -6,10 +6,11 @@ using Sandbox;
 /// </summary>
 public sealed class TopDownCamera : Component
 {
-	[Property] public GameObject Target { get; set; }
-	[Property] public float Height { get; set; } = 350f;
-	[Property] public float Distance { get; set; } = 220f;
-	[Property] public float SmoothSpeed { get; set; } = 8f;
+	[Property] GameObject Target { get; set; }
+
+	[Property] float SmoothSpeed { get; set; } = 8f;
+
+	[Property] Vector3 Offset { get; set; } = new Vector3(-200f, 0f, 1000f);
 
 	protected override void OnUpdate()
 	{
@@ -17,10 +18,9 @@ public sealed class TopDownCamera : Component
 			return;
 
 		// Keep camera above and behind the target with a slight tilt.
-		var desiredPosition = Target.WorldPosition + (Vector3.Up * Height) + (Vector3.Backward * Distance);
+		var desiredPosition = Target.WorldPosition + Offset;
 		WorldPosition = Vector3.Lerp(WorldPosition, desiredPosition, Time.Delta * SmoothSpeed);
 
-		// Always look at the target so player stays centered in view.
 		WorldRotation = Rotation.LookAt(Target.WorldPosition - WorldPosition);
 	}
 }
